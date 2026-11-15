@@ -1,7 +1,3 @@
-// In-browser stand-in for the FastAPI + TimescaleDB backend.
-// Generates the same signals as sim/simulador.py (circadian rhythm, exercise,
-// meals, random anomalies) and answers with the same shapes as the real API.
-
 const SEGUNDO = 1000;
 const MINUTO = 60 * SEGUNDO;
 const HORA = 60 * MINUTO;
