@@ -1,3 +1,4 @@
+import { montarAdam } from "./adam.js";
 import { api, ESTADOS, numero, peorEstado, iniciales, h, $, horaEje } from "./datos.js";
 
 const DIAS_EN_VUELO = 142;               // must match mock.js; replace with mission launch date from your API
@@ -240,11 +241,31 @@ async function cargarHistorial() {
       ...porDia.map(m => h("td", {}, celda(m.get(dia))))))));
 }
 
+/* ---------------- ADAM assistant (UI only: connect your agent in the callbacks below) ---------------- */
+function montarAsistente() {
+  const resumen = obj => S.crew.slice(0, 2).filter(t => obj === "todos" || t.id === obj).map(t => {
+    const l = S.vivo[t.id]?.lect ?? {};
+    const g = peorEstado(Object.values(l).filter(x => S.ind[x.indicador]?.categoria !== "ambiente").map(x => x.estado));
+    return `${t.nombre}: heart rate ${numero(l.hr?.valor)} bpm, SpO₂ ${numero(l.spo2?.valor)} %, overall ${ESTADOS[g].etiqueta.toLowerCase()}.`;
+  }).join(" ");
+  // DEMO ONLY — replace with your real agent request; then call adam.intercambio(...) and adam.hablar(audioUrl)
+  const demo = (objetivo, q) => {
+    adam.estado("pensando");
+    setTimeout(() => { adam.intercambio(q, resumen(objetivo), objetivo); adam.estado("hablando"); setTimeout(() => adam.estado("listo"), 3000); }, 1000);
+  };
+  const adam = montarAdam({
+    raiz: $("#adam"), tripulantes: S.crew.slice(0, 2),
+    alObjetivo: id => document.querySelectorAll(".tripulante").forEach(p => p.classList.toggle("apuntado", p.dataset.id === id)),
+    alMicrofono: ({ objetivo, grabando }) => (grabando ? demo(objetivo, "How are the vitals?") : adam.estado("grabando")),
+    alEnviar: ({ texto, objetivo }) => demo(objetivo, texto),
+  });
+}
+
 /* ---------------- boot ---------------- */
 async function iniciar() {
   const [inds, crew] = await Promise.all([api.indicadores(), api.tripulantes()]);
   S.ind = Object.fromEntries(inds.map(i => [i.id, i])); S.crew = crew;
-  montarPestanas(); montarVivo(); montarControlesHistorial();
+  montarPestanas(); montarVivo(); montarControlesHistorial(); montarAsistente();
   await ciclo(); setInterval(ciclo, 1000);
   window.addEventListener("resize", pintarVivo);
 }
