@@ -3,58 +3,46 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Health Monitor — Mission</title>
+<title>ADAM · Astronaut Monitoring</title>
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="styles.css">
 <script type="module" src="app.js"></script>
 </head>
 <body>
-<div class="app">
-  <main class="tablero">
-    <header class="barra">
-      <div class="marca">
-        <svg width="36" height="36" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <defs>
-            <linearGradient id="visor" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#f0a3bb"/>
-              <stop offset="1" stop-color="#c08535"/>
-            </linearGradient>
-          </defs>
-          <circle cx="16" cy="13" r="10" stroke="#f0a3bb" stroke-width="1.6"/>
-          <rect x="9" y="8.5" width="14" height="9" rx="4.5" fill="url(#visor)"/>
-          <path d="M12 11.2l2.2-.9" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity=".55"/>
-          <path d="M6 31c0-4 4.5-6.5 10-6.5s10 2.5 10 6.5" stroke="#f0a3bb" stroke-width="1.6" stroke-linecap="round"/>
-        </svg>
-        <div>
-          <h1>Health Monitor</h1>
-          <p>Mission · crew telemetry</p>
-        </div>
-      </div>
-      <nav class="segmentado" id="tripulantes" aria-label="Crew member"></nav>
-      <nav class="segmentado" id="rangos" aria-label="Time range"></nav>
-      <div class="conexion" id="conexion"><i></i><span>Connecting…</span></div>
-    </header>
+<header class="barra">
+  <img class="logo" src="assets/adam_logo.png" alt="ADAM — Automatically device for Astronaut Monitoring">
+  <nav class="pestanas" role="tablist" aria-label="Views">
+    <button role="tab" id="tab-vivo" aria-selected="true" aria-controls="vista-vivo">Live</button>
+    <button role="tab" id="tab-historial" aria-selected="false" aria-controls="vista-historial">History</button>
+  </nav>
+  <div class="conexion" id="conexion"><i></i><span>Connecting…</span></div>
+</header>
 
-    <section class="resumen" id="resumen"></section>
+<main>
+  <section id="vista-vivo" role="tabpanel" aria-labelledby="tab-vivo">
+    <div class="cabina" id="cabina" aria-label="Cabin environment"></div>
+    <div class="dupla" id="dupla"></div>
+  </section>
 
-    <section class="centro">
-      <section class="vitales" id="vitales"></section>
-      <article class="panel cuerpo">
-        <div class="panel-cab"><span class="etiqueta">Body map</span><span class="cuerpo-ayuda">Tap a point to see its chart</span></div>
-        <div class="cuerpo-lienzo" id="cuerpo"></div>
-        <div class="adam" id="adam"></div>
-      </article>
-      <div class="lateral">
-        <article class="panel" id="cabina"></article>
-        <article class="panel" id="diario"></article>
-      </div>
-    </section>
-
-    <article class="panel foco" id="foco"></article>
-  </main>
-</div>
+  <section id="vista-historial" role="tabpanel" aria-labelledby="tab-historial" hidden>
+    <div class="controles">
+      <nav class="segmentado" id="h-metricas" aria-label="Metric"></nav>
+      <nav class="segmentado" id="h-rangos" aria-label="Range"></nav>
+    </div>
+    <article class="panel grande">
+      <div class="leyenda" id="h-leyenda"></div>
+      <div class="lienzo"><canvas id="h-canvas"></canvas><div class="globo" id="h-globo" hidden></div></div>
+    </article>
+    <div class="dupla" id="h-resumen"></div>
+    <article class="panel grande">
+      <h2>Daily log · last 14 days</h2>
+      <div class="tabla-caja"><table id="h-tabla"></table></div>
+    </article>
+  </section>
+</main>
+<aside class="adam" id="adam" aria-label="ADAM assistant"></aside>
 </body>
 </html>
